@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './app.css';
+import VideoList from './components/video_list/video_list';
 
 function App() {
+  const [videos, setVideos] = useState([]);
+  /*
+   * 2번째 인자
+   * [] 빈값일경우 한번만
+   * [videos] videos가 변경되었을때
+   */
+  useEffect(()=>{
+    const requestOptions = {
+      method: 'GET',
+      redirect: 'follow'
+    };
+    
+    fetch("https://youtube.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=25&key=AIzaSyBFWW3HOgIunVCOODF-qH1JkeMJF5tvnmo", requestOptions)
+      .then(response => response.json())
+      .then(result => setVideos(result.items))
+      .catch(error => console.log('error', error));
+  }, []);
   return (
-    <h1>Hello2 :</h1>
+    <VideoList videos={videos}/>
   ); 
 }
 
