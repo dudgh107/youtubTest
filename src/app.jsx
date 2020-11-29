@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import './app.css';
+import styles from './app.module.css';
+import SearchBox from './components/search_box/search_box';
 import VideoList from './components/video_list/video_list';
 
-function App() {
+function App({youtube}) {
   const [videos, setVideos] = useState([]);
+  const search = query => {
+    youtube.search(query).then(videos => setVideos(videos))
+  };
   /*
    * 2번째 인자
    * [] 빈값일경우 한번만
    * [videos] videos가 변경되었을때
    */
   useEffect(()=>{
-    const requestOptions = {
-      method: 'GET',
-      redirect: 'follow'
-    };
-    
-    fetch("https://youtube.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=25&key=AIzaSyBFWW3HOgIunVCOODF-qH1JkeMJF5tvnmo", requestOptions)
-      .then(response => response.json())
-      .then(result => setVideos(result.items))
-      .catch(error => console.log('error', error));
+    youtube.mostPopular().then(videos => setVideos(videos))
   }, []);
+
   return (
-    <VideoList videos={videos}/>
+    <div className={styles.app}>
+      <SearchBox onSearch={search}></SearchBox>
+      <VideoList videos={videos}/>
+    </div>
+    
   ); 
 }
 
