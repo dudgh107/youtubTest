@@ -2,11 +2,21 @@ import React, { useEffect, useState } from 'react';
 import styles from './app.module.css';
 import SearchBox from './components/search_box/search_box';
 import VideoList from './components/video_list/video_list';
+import Video_detial from './components/vidoe_detail/video_detial';
 
 function App({youtube}) {
   const [videos, setVideos] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const selectVideo = (video) => {
+    setSelectedVideo(video);
+  }
   const search = query => {
-    youtube.search(query).then(videos => setVideos(videos))
+    setSelectedVideo(null);
+    youtube.search(query).then(videos => {
+      setVideos(videos);
+      
+    })
+    
   };
   /*
    * 2번째 인자
@@ -20,7 +30,17 @@ function App({youtube}) {
   return (
     <div className={styles.app}>
       <SearchBox onSearch={search}></SearchBox>
-      <VideoList videos={videos}/>
+      <section className={styles.content}>
+        {selectedVideo && (
+          <div className={styles.detail}>
+            <Video_detial video={selectedVideo}/>
+          </div>
+        )}
+        <div className={styles.list}>
+          <VideoList videos={videos} onVideoClick={selectVideo} display={selectedVideo?'list':'grid'}/>
+        </div>
+      </section>
+      
     </div>
     
   ); 
