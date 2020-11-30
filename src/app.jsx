@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useCallback } from 'react';
 import styles from './app.module.css';
 import SearchBox from './components/search_box/search_box';
 import VideoList from './components/video_list/video_list';
@@ -10,14 +10,14 @@ function App({youtube}) {
   const selectVideo = (video) => {
     setSelectedVideo(video);
   }
-  const search = query => {
+  const search = useCallback(query => {
     setSelectedVideo(null);
     youtube.search(query).then(videos => {
       setVideos(videos);
       
     })
     
-  };
+  }, [youtube]);
   /*
    * 2번째 인자
    * [] 빈값일경우 한번만
